@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>broker &mdash; Broker v0.0.0
+ documentation</title>
+    <link rel="stylesheet" href="_static/rtd.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.0
+',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Broker v0.0.0
+ documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Broker v0.0.0
+ documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-broker">
+<span id="broker"></span><h1><a class="reference internal" href="#module-broker" title="broker"><tt class="xref py py-mod docutils literal"><span class="pre">broker</span></tt></a><a class="headerlink" href="#module-broker" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="broker.Broker">
+<em class="property">class </em><tt class="descclassname">broker.</tt><tt class="descname">Broker</tt><big>(</big><em>header_name='Accept'</em><big>)</big><a class="reference internal" href="_modules/broker.html#Broker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#broker.Broker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function dispatch based on MIME Accept-* headers.</p>
+<p>Initialize a broker with some dispatched-to functions matched against MIME
+types:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Broker</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">html_handler</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;text/html&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xml_handler</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;application/xml&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">json_handler</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;application/json&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Select a backend function based on an Accept header:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;text/html&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="n">html_handler</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;text/html,application/json;q=0.1&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="n">html_handler</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;text/html;q=0.1,application/json&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="n">json_handler</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Call the backend functions directly:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">(</span><span class="s">&quot;text/html&quot;</span><span class="p">,</span> <span class="s">&#39;hello&#39;</span><span class="p">)</span>
+<span class="go">(1, &#39;hello&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">(</span><span class="s">&quot;text/html,application/json;q=0.1&quot;</span><span class="p">,</span> <span class="s">&#39;world&#39;</span><span class="p">)</span>
+<span class="go">(1, &#39;world&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">(</span><span class="s">&quot;text/html;q=0.1,application/json&quot;</span><span class="p">,</span> <span class="s">&#39;json_stuff&#39;</span><span class="p">)</span>
+<span class="go">(3, &#39;json_stuff&#39;)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="broker.Broker.add">
+<tt class="descname">add</tt><big>(</big><em>mimetype</em>, <em>function</em>, <em>quality=1</em><big>)</big><a class="headerlink" href="#broker.Broker.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a function for a MIME type, optionally with a server quality.</p>
+<p>Return the function directly. If <cite>quality</cite> is not provided, defaults to
+1.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Broker</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;text/html&#39;</span><span class="p">,</span> <span class="s">&#39;html_func&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="s">&#39;text/html&#39;</span><span class="p">]</span>
+<span class="go">(&#39;html_func&#39;, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;json_func&#39;</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="s">&#39;application/json&#39;</span><span class="p">]</span>
+<span class="go">(&#39;json_func&#39;, 0.5)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="broker.Broker.register">
+<tt class="descname">register</tt><big>(</big><em>mimetype</em>, <em>quality=1</em><big>)</big><a class="headerlink" href="#broker.Broker.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a decorator for registering a function for a MIME type.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Broker</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@b.register</span><span class="p">(</span><span class="s">&quot;text/html&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">html_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@b.register</span><span class="p">(</span><span class="s">&quot;application/json&quot;</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">json_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="s">&#39;text/html&#39;</span><span class="p">]</span>
+<span class="go">(&lt;function html_func at 0x...&gt;, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">registry</span><span class="p">[</span><span class="s">&#39;application/json&#39;</span><span class="p">]</span>
+<span class="go">(&lt;function json_func at 0x...&gt;, 0.25)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="broker.Broker.select">
+<tt class="descname">select</tt><big>(</big><em>accept_header</em><big>)</big><a class="headerlink" href="#broker.Broker.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the best function for a given Accept header.</p>
+<p>Raise <tt class="xref py py-exc docutils literal"><span class="pre">NotAcceptable</span></tt> if no acceptable function is found.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Broker</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;text/html&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&#39;text/html&#39;</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&#39;application/json&#39;</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="broker.Broker.server_types">
+<tt class="descname">server_types</tt><big>(</big><big>)</big><a class="headerlink" href="#broker.Broker.server_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of <cite>(mimetype, quality)</cite> pairs, sorted by quality.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Broker</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;application/xml&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&#39;text/html&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">quality</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">server_types</span><span class="p">()</span>
+<span class="go">[(&#39;text/html&#39;, 1), (&#39;application/json&#39;, 0.75), (&#39;application/xml&#39;, 0.25)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/broker.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Broker v0.0.0
+ documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
